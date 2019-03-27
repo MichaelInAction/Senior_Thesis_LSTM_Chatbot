@@ -17,9 +17,17 @@ for line in trump_tweets_formatted:
     newline = newline.replace('! ', '!\n')
     newline = newline.replace('? ', '?\n')
     newline = newline.replace('U.S.\n', 'U.S. ')
-    #newline = newline.replace('\n#', ' #')
-    #newline = newline.replace('\n #', ' #')
+    newline = newline.replace('\n#', ' #')
+    newline = newline.replace('\n #', ' #')
     print(newline, file=trump_tweets_sentences)
 
 trump_tweets_formatted.close()
+trump_tweets_sentences.close()
+
+trump_tweets_sentences_formatted = open('trumptweetssentencesformatted.txt', 'w', encoding='latin-1')
+trump_tweets_sentences = open('trumptweetssentences.txt', 'r', encoding='latin-1')
+for line in trump_tweets_sentences:
+    if len(line.strip()) > 0:
+        print(line.strip(), file=trump_tweets_sentences_formatted)
+trump_tweets_sentences_formatted.close()
 trump_tweets_sentences.close()
