@@ -17,6 +17,7 @@ for line in trump_tweets_formatted:
     newline = newline.replace('! ', '!\n')
     newline = newline.replace('? ', '?\n')
     newline = newline.replace('U.S.\n', 'U.S. ')
+    #bring lone hashtags back to the associated sentences
     newline = newline.replace('\n#', ' #')
     newline = newline.replace('\n #', ' #')
     print(newline, file=trump_tweets_sentences)
@@ -27,7 +28,12 @@ trump_tweets_sentences.close()
 trump_tweets_sentences_formatted = open('trumptweetssentencesformatted.txt', 'w', encoding='latin-1')
 trump_tweets_sentences = open('trumptweetssentences.txt', 'r', encoding='latin-1')
 for line in trump_tweets_sentences:
+    #get rid of punctuation
+    line = line.replace('.', '')
+    line = line.replace('?', '')
+    line = line.replace('!', '')
     if len(line.strip()) > 0:
-        print(line.strip(), file=trump_tweets_sentences_formatted)
+        if(len(line.split()) <= 30):
+            print(line.strip(), file=trump_tweets_sentences_formatted)
 trump_tweets_sentences_formatted.close()
 trump_tweets_sentences.close()

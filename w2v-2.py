@@ -17,7 +17,7 @@ from keras.models import Sequential
 from keras.utils.data_utils import get_file
 
 print('\nPreparing the sentences...')
-max_sentence_len = 54
+max_sentence_len = 30
 with open('trumptweetssentencesformatted.txt') as file_:
   docs = file_.readlines()
 sentences = [[word for word in doc.lower().split()] for doc in docs]

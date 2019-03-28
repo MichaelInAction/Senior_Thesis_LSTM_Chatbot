@@ -44,7 +44,15 @@ with open('trumptweets.csv', encoding='latin-1') as csv_file:
                         s = s.replace('=', ' equals ')
                         #replace + with the word plus
                         s = s.replace('+', ' plus ')
-                        print(s)
+                        #remove parentheses
+                        s = s.replace('(', '')
+                        s = s.replace(')', '')
+                        #remove hyphens
+                        s = s.replace('-', ' ')
+                        s = s.replace('–', ' ')
+                        #remove colons and semicolons
+                        s = s.replace(':', '')
+                        s = s.replace(';', '')
                         print(s, file=trump_tweets_formatted)
             line_count += 1
     print(f'Processed {line_count} lines.')
