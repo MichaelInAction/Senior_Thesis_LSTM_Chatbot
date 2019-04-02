@@ -10,11 +10,22 @@ import gensim
 import string
 
 from keras.callbacks import LambdaCallback
+from keras.callbacks import Callback
 from keras.layers.recurrent import LSTM
 from keras.layers.embeddings import Embedding
 from keras.layers import Dense, Activation
 from keras.models import Sequential
 from keras.utils.data_utils import get_file
+
+class LossHistory(Callback):
+    def on_train_begin(self, logs={}):
+        self.losses = []
+
+    def on_epoch_end(self, batch, logs={}):
+        self.losses.append(logs.get('loss'))
+
+log = open('batchsize1024-3.txt', 'w')
+
 
 print('\nPreparing the sentences...')
 max_sentence_len = 30
@@ -24,7 +35,7 @@ sentences = [[word for word in doc.lower().split()] for doc in docs]
 print('Num sentences:', len(sentences))
 
 print('\nTraining word2vec...')
-word_model = gensim.models.Word2Vec(sentences, size=100, min_count=1, window=5, iter=100)
+word_model = gensim.models.Word2Vec(sentences, size=50, min_count=1, window=5, iter=100)
 pretrained_weights = word_model.wv.syn0
 vocab_size, emdedding_size = pretrained_weights.shape
 print('Result embedding shape:', pretrained_weights.shape)
@@ -56,6 +67,8 @@ model.add(Dense(units=vocab_size))
 model.add(Activation('softmax'))
 model.compile(optimizer='adam', loss='sparse_categorical_crossentropy')
 
+history = LossHistory()
+
 def sample(preds, temperature=1.0):
   if temperature <= 0:
     return np.argmax(preds)
@@ -86,11 +99,14 @@ def on_epoch_end(epoch, _):
     'obama',
     'democrats',
   ]
+  print(history.losses)
   for text in texts:
     sample = generate_next(text)
     print('%s... -> %s' % (text, sample))
 
 model.fit(train_x, train_y,
-          batch_size=128,
+          batch_size=1024,
           epochs=200,
-          callbacks=[LambdaCallback(on_epoch_end=on_epoch_end)])
+          callbacks=[LambdaCallback(on_epoch_end=on_epoch_end), history])
+
+print(history.losses, file=log)

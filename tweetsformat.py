@@ -32,6 +32,8 @@ with open('trumptweets.csv', encoding='latin-1') as csv_file:
                         s = s.replace('"', '')
                         s = s.replace('“', '')
                         s = s.replace('”', '')
+                        #remove all single quotes
+                        s = s.replace('\'', '')
                         #add spaces after ! and ?
                         s = s.replace('!', '! ')
                         s = s.replace('?', '? ')
@@ -50,6 +52,8 @@ with open('trumptweets.csv', encoding='latin-1') as csv_file:
                         #remove hyphens
                         s = s.replace('-', ' ')
                         s = s.replace('–', ' ')
+                        #remove elipses
+                        s = s.replace('…', '')
                         #remove colons and semicolons
                         s = s.replace(':', '')
                         s = s.replace(';', '')
