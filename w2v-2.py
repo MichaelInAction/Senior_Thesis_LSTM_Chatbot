@@ -24,7 +24,7 @@ class LossHistory(Callback):
     def on_epoch_end(self, batch, logs={}):
         self.losses.append(logs.get('loss'))
 
-log = open('batchsize1024-3.txt', 'w')
+log = open('modelsize300-3.txt', 'w')
 
 
 print('\nPreparing the sentences...')
@@ -35,7 +35,7 @@ sentences = [[word for word in doc.lower().split()] for doc in docs]
 print('Num sentences:', len(sentences))
 
 print('\nTraining word2vec...')
-word_model = gensim.models.Word2Vec(sentences, size=50, min_count=1, window=5, iter=100)
+word_model = gensim.models.Word2Vec(sentences, size=300, min_count=1, window=5, iter=100)
 pretrained_weights = word_model.wv.syn0
 vocab_size, emdedding_size = pretrained_weights.shape
 print('Result embedding shape:', pretrained_weights.shape)
