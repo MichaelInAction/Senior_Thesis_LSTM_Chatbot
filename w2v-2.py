@@ -13,7 +13,7 @@ from keras.callbacks import LambdaCallback
 from keras.callbacks import Callback
 from keras.layers.recurrent import LSTM
 from keras.layers.embeddings import Embedding
-from keras.layers import Dense, Activation
+from keras.layers import Dense, Activation, Dropout
 from keras.models import Sequential
 from keras.utils.data_utils import get_file
 
@@ -24,7 +24,7 @@ class LossHistory(Callback):
     def on_epoch_end(self, batch, logs={}):
         self.losses.append(logs.get('loss'))
 
-log = open('modelsize300-3.txt', 'w')
+log = open('dropoff2-3.txt', 'w')
 
 
 print('\nPreparing the sentences...')
@@ -65,6 +65,7 @@ model.add(Embedding(input_dim=vocab_size, output_dim=emdedding_size, weights=[pr
 model.add(LSTM(units=emdedding_size))
 model.add(Dense(units=vocab_size))
 model.add(Activation('softmax'))
+model.add(Dropout(.2))
 model.compile(optimizer='adam', loss='sparse_categorical_crossentropy')
 
 history = LossHistory()
