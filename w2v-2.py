@@ -24,7 +24,7 @@ class LossHistory(Callback):
     def on_epoch_end(self, batch, logs={}):
         self.losses.append(logs.get('loss'))
 
-log = open('dropoff2-3.txt', 'w')
+log = open('dropout-1.txt', 'w')
 
 
 print('\nPreparing the sentences...')
@@ -65,7 +65,7 @@ model.add(Embedding(input_dim=vocab_size, output_dim=emdedding_size, weights=[pr
 model.add(LSTM(units=emdedding_size))
 model.add(Dense(units=vocab_size))
 model.add(Activation('softmax'))
-model.add(Dropout(.2))
+model.add(Dropout(.1))
 model.compile(optimizer='adam', loss='sparse_categorical_crossentropy')
 
 history = LossHistory()
@@ -100,13 +100,412 @@ def on_epoch_end(epoch, _):
     'obama',
     'democrats',
   ]
-  print(history.losses)
   for text in texts:
     sample = generate_next(text)
     print('%s... -> %s' % (text, sample))
 
 model.fit(train_x, train_y,
-          batch_size=1024,
+          batch_size=512,
+          epochs=200,
+          callbacks=[LambdaCallback(on_epoch_end=on_epoch_end), history])
+
+print(history.losses, file=log)
+
+#---------------------------
+
+log = open('dropout1-2.txt', 'w')
+
+
+print('\nPreparing the sentences...')
+max_sentence_len = 30
+with open('trumptweetssentencesformatted.txt') as file_:
+  docs = file_.readlines()
+sentences = [[word for word in doc.lower().split()] for doc in docs]
+print('Num sentences:', len(sentences))
+
+print('\nTraining word2vec...')
+word_model = gensim.models.Word2Vec(sentences, size=300, min_count=1, window=5, iter=100)
+pretrained_weights = word_model.wv.syn0
+vocab_size, emdedding_size = pretrained_weights.shape
+print('Result embedding shape:', pretrained_weights.shape)
+print('Checking similar words:')
+for word in ['model', 'network', 'train', 'learn']:
+  most_similar = ', '.join('%s (%.2f)' % (similar, dist) for similar, dist in word_model.most_similar(word)[:8])
+  print('  %s -> %s' % (word, most_similar))
+
+print('\nPreparing the data for LSTM...')
+train_x = np.zeros([len(sentences), max_sentence_len], dtype=np.int32)
+train_y = np.zeros([len(sentences)], dtype=np.int32)
+for i, sentence in enumerate(sentences):
+  for t, word in enumerate(sentence[:-1]):
+    train_x[i, t] = word2idx(word)
+  train_y[i] = word2idx(sentence[-1])
+print('train_x shape:', train_x.shape)
+print('train_y shape:', train_y.shape)
+
+print('\nTraining LSTM...')
+model = Sequential()
+model.add(Embedding(input_dim=vocab_size, output_dim=emdedding_size, weights=[pretrained_weights]))
+model.add(LSTM(units=emdedding_size))
+model.add(Dense(units=vocab_size))
+model.add(Activation('softmax'))
+model.add(Dropout(.1))
+model.compile(optimizer='adam', loss='sparse_categorical_crossentropy')
+
+history = LossHistory()
+
+model.fit(train_x, train_y,
+          batch_size=512,
+          epochs=200,
+          callbacks=[LambdaCallback(on_epoch_end=on_epoch_end), history])
+
+print(history.losses, file=log)
+
+#---------------------------
+
+log = open('dropout1-3.txt', 'w')
+
+
+print('\nPreparing the sentences...')
+max_sentence_len = 30
+with open('trumptweetssentencesformatted.txt') as file_:
+  docs = file_.readlines()
+sentences = [[word for word in doc.lower().split()] for doc in docs]
+print('Num sentences:', len(sentences))
+
+print('\nTraining word2vec...')
+word_model = gensim.models.Word2Vec(sentences, size=300, min_count=1, window=5, iter=100)
+pretrained_weights = word_model.wv.syn0
+vocab_size, emdedding_size = pretrained_weights.shape
+print('Result embedding shape:', pretrained_weights.shape)
+print('Checking similar words:')
+for word in ['model', 'network', 'train', 'learn']:
+  most_similar = ', '.join('%s (%.2f)' % (similar, dist) for similar, dist in word_model.most_similar(word)[:8])
+  print('  %s -> %s' % (word, most_similar))
+
+print('\nPreparing the data for LSTM...')
+train_x = np.zeros([len(sentences), max_sentence_len], dtype=np.int32)
+train_y = np.zeros([len(sentences)], dtype=np.int32)
+for i, sentence in enumerate(sentences):
+  for t, word in enumerate(sentence[:-1]):
+    train_x[i, t] = word2idx(word)
+  train_y[i] = word2idx(sentence[-1])
+print('train_x shape:', train_x.shape)
+print('train_y shape:', train_y.shape)
+
+print('\nTraining LSTM...')
+model = Sequential()
+model.add(Embedding(input_dim=vocab_size, output_dim=emdedding_size, weights=[pretrained_weights]))
+model.add(LSTM(units=emdedding_size))
+model.add(Dense(units=vocab_size))
+model.add(Activation('softmax'))
+model.add(Dropout(.1))
+model.compile(optimizer='adam', loss='sparse_categorical_crossentropy')
+
+history = LossHistory()
+
+model.fit(train_x, train_y,
+          batch_size=512,
+          epochs=200,
+          callbacks=[LambdaCallback(on_epoch_end=on_epoch_end), history])
+
+print(history.losses, file=log)
+
+#---------------------------
+
+log = open('dropout15-1.txt', 'w')
+
+
+print('\nPreparing the sentences...')
+max_sentence_len = 30
+with open('trumptweetssentencesformatted.txt') as file_:
+  docs = file_.readlines()
+sentences = [[word for word in doc.lower().split()] for doc in docs]
+print('Num sentences:', len(sentences))
+
+print('\nTraining word2vec...')
+word_model = gensim.models.Word2Vec(sentences, size=300, min_count=1, window=5, iter=100)
+pretrained_weights = word_model.wv.syn0
+vocab_size, emdedding_size = pretrained_weights.shape
+print('Result embedding shape:', pretrained_weights.shape)
+print('Checking similar words:')
+for word in ['model', 'network', 'train', 'learn']:
+  most_similar = ', '.join('%s (%.2f)' % (similar, dist) for similar, dist in word_model.most_similar(word)[:8])
+  print('  %s -> %s' % (word, most_similar))
+
+print('\nPreparing the data for LSTM...')
+train_x = np.zeros([len(sentences), max_sentence_len], dtype=np.int32)
+train_y = np.zeros([len(sentences)], dtype=np.int32)
+for i, sentence in enumerate(sentences):
+  for t, word in enumerate(sentence[:-1]):
+    train_x[i, t] = word2idx(word)
+  train_y[i] = word2idx(sentence[-1])
+print('train_x shape:', train_x.shape)
+print('train_y shape:', train_y.shape)
+
+print('\nTraining LSTM...')
+model = Sequential()
+model.add(Embedding(input_dim=vocab_size, output_dim=emdedding_size, weights=[pretrained_weights]))
+model.add(LSTM(units=emdedding_size))
+model.add(Dense(units=vocab_size))
+model.add(Activation('softmax'))
+model.add(Dropout(.15))
+model.compile(optimizer='adam', loss='sparse_categorical_crossentropy')
+
+history = LossHistory()
+
+model.fit(train_x, train_y,
+          batch_size=512,
+          epochs=200,
+          callbacks=[LambdaCallback(on_epoch_end=on_epoch_end), history])
+
+print(history.losses, file=log)
+
+#---------------------------
+
+log = open('dropout15-2.txt', 'w')
+
+
+print('\nPreparing the sentences...')
+max_sentence_len = 30
+with open('trumptweetssentencesformatted.txt') as file_:
+  docs = file_.readlines()
+sentences = [[word for word in doc.lower().split()] for doc in docs]
+print('Num sentences:', len(sentences))
+
+print('\nTraining word2vec...')
+word_model = gensim.models.Word2Vec(sentences, size=300, min_count=1, window=5, iter=100)
+pretrained_weights = word_model.wv.syn0
+vocab_size, emdedding_size = pretrained_weights.shape
+print('Result embedding shape:', pretrained_weights.shape)
+print('Checking similar words:')
+for word in ['model', 'network', 'train', 'learn']:
+  most_similar = ', '.join('%s (%.2f)' % (similar, dist) for similar, dist in word_model.most_similar(word)[:8])
+  print('  %s -> %s' % (word, most_similar))
+
+print('\nPreparing the data for LSTM...')
+train_x = np.zeros([len(sentences), max_sentence_len], dtype=np.int32)
+train_y = np.zeros([len(sentences)], dtype=np.int32)
+for i, sentence in enumerate(sentences):
+  for t, word in enumerate(sentence[:-1]):
+    train_x[i, t] = word2idx(word)
+  train_y[i] = word2idx(sentence[-1])
+print('train_x shape:', train_x.shape)
+print('train_y shape:', train_y.shape)
+
+print('\nTraining LSTM...')
+model = Sequential()
+model.add(Embedding(input_dim=vocab_size, output_dim=emdedding_size, weights=[pretrained_weights]))
+model.add(LSTM(units=emdedding_size))
+model.add(Dense(units=vocab_size))
+model.add(Activation('softmax'))
+model.add(Dropout(.15))
+model.compile(optimizer='adam', loss='sparse_categorical_crossentropy')
+
+history = LossHistory()
+
+model.fit(train_x, train_y,
+          batch_size=512,
+          epochs=200,
+          callbacks=[LambdaCallback(on_epoch_end=on_epoch_end), history])
+
+print(history.losses, file=log)
+
+#---------------------------
+
+log = open('dropout15-3.txt', 'w')
+
+
+print('\nPreparing the sentences...')
+max_sentence_len = 30
+with open('trumptweetssentencesformatted.txt') as file_:
+  docs = file_.readlines()
+sentences = [[word for word in doc.lower().split()] for doc in docs]
+print('Num sentences:', len(sentences))
+
+print('\nTraining word2vec...')
+word_model = gensim.models.Word2Vec(sentences, size=300, min_count=1, window=5, iter=100)
+pretrained_weights = word_model.wv.syn0
+vocab_size, emdedding_size = pretrained_weights.shape
+print('Result embedding shape:', pretrained_weights.shape)
+print('Checking similar words:')
+for word in ['model', 'network', 'train', 'learn']:
+  most_similar = ', '.join('%s (%.2f)' % (similar, dist) for similar, dist in word_model.most_similar(word)[:8])
+  print('  %s -> %s' % (word, most_similar))
+
+print('\nPreparing the data for LSTM...')
+train_x = np.zeros([len(sentences), max_sentence_len], dtype=np.int32)
+train_y = np.zeros([len(sentences)], dtype=np.int32)
+for i, sentence in enumerate(sentences):
+  for t, word in enumerate(sentence[:-1]):
+    train_x[i, t] = word2idx(word)
+  train_y[i] = word2idx(sentence[-1])
+print('train_x shape:', train_x.shape)
+print('train_y shape:', train_y.shape)
+
+print('\nTraining LSTM...')
+model = Sequential()
+model.add(Embedding(input_dim=vocab_size, output_dim=emdedding_size, weights=[pretrained_weights]))
+model.add(LSTM(units=emdedding_size))
+model.add(Dense(units=vocab_size))
+model.add(Activation('softmax'))
+model.add(Dropout(.15))
+model.compile(optimizer='adam', loss='sparse_categorical_crossentropy')
+
+history = LossHistory()
+
+model.fit(train_x, train_y,
+          batch_size=512,
+          epochs=200,
+          callbacks=[LambdaCallback(on_epoch_end=on_epoch_end), history])
+
+print(history.losses, file=log)
+
+#---------------------------
+
+log = open('dropout2-1.txt', 'w')
+
+
+print('\nPreparing the sentences...')
+max_sentence_len = 30
+with open('trumptweetssentencesformatted.txt') as file_:
+  docs = file_.readlines()
+sentences = [[word for word in doc.lower().split()] for doc in docs]
+print('Num sentences:', len(sentences))
+
+print('\nTraining word2vec...')
+word_model = gensim.models.Word2Vec(sentences, size=300, min_count=1, window=5, iter=100)
+pretrained_weights = word_model.wv.syn0
+vocab_size, emdedding_size = pretrained_weights.shape
+print('Result embedding shape:', pretrained_weights.shape)
+print('Checking similar words:')
+for word in ['model', 'network', 'train', 'learn']:
+  most_similar = ', '.join('%s (%.2f)' % (similar, dist) for similar, dist in word_model.most_similar(word)[:8])
+  print('  %s -> %s' % (word, most_similar))
+
+print('\nPreparing the data for LSTM...')
+train_x = np.zeros([len(sentences), max_sentence_len], dtype=np.int32)
+train_y = np.zeros([len(sentences)], dtype=np.int32)
+for i, sentence in enumerate(sentences):
+  for t, word in enumerate(sentence[:-1]):
+    train_x[i, t] = word2idx(word)
+  train_y[i] = word2idx(sentence[-1])
+print('train_x shape:', train_x.shape)
+print('train_y shape:', train_y.shape)
+
+print('\nTraining LSTM...')
+model = Sequential()
+model.add(Embedding(input_dim=vocab_size, output_dim=emdedding_size, weights=[pretrained_weights]))
+model.add(LSTM(units=emdedding_size))
+model.add(Dense(units=vocab_size))
+model.add(Activation('softmax'))
+model.add(Dropout(.2))
+model.compile(optimizer='adam', loss='sparse_categorical_crossentropy')
+
+history = LossHistory()
+
+model.fit(train_x, train_y,
+          batch_size=512,
+          epochs=200,
+          callbacks=[LambdaCallback(on_epoch_end=on_epoch_end), history])
+
+print(history.losses, file=log)
+
+#---------------------------
+
+log = open('dropout2-3.txt', 'w')
+
+
+print('\nPreparing the sentences...')
+max_sentence_len = 30
+with open('trumptweetssentencesformatted.txt') as file_:
+  docs = file_.readlines()
+sentences = [[word for word in doc.lower().split()] for doc in docs]
+print('Num sentences:', len(sentences))
+
+print('\nTraining word2vec...')
+word_model = gensim.models.Word2Vec(sentences, size=300, min_count=1, window=5, iter=100)
+pretrained_weights = word_model.wv.syn0
+vocab_size, emdedding_size = pretrained_weights.shape
+print('Result embedding shape:', pretrained_weights.shape)
+print('Checking similar words:')
+for word in ['model', 'network', 'train', 'learn']:
+  most_similar = ', '.join('%s (%.2f)' % (similar, dist) for similar, dist in word_model.most_similar(word)[:8])
+  print('  %s -> %s' % (word, most_similar))
+
+print('\nPreparing the data for LSTM...')
+train_x = np.zeros([len(sentences), max_sentence_len], dtype=np.int32)
+train_y = np.zeros([len(sentences)], dtype=np.int32)
+for i, sentence in enumerate(sentences):
+  for t, word in enumerate(sentence[:-1]):
+    train_x[i, t] = word2idx(word)
+  train_y[i] = word2idx(sentence[-1])
+print('train_x shape:', train_x.shape)
+print('train_y shape:', train_y.shape)
+
+print('\nTraining LSTM...')
+model = Sequential()
+model.add(Embedding(input_dim=vocab_size, output_dim=emdedding_size, weights=[pretrained_weights]))
+model.add(LSTM(units=emdedding_size))
+model.add(Dense(units=vocab_size))
+model.add(Activation('softmax'))
+model.add(Dropout(.2))
+model.compile(optimizer='adam', loss='sparse_categorical_crossentropy')
+
+history = LossHistory()
+
+model.fit(train_x, train_y,
+          batch_size=512,
+          epochs=200,
+          callbacks=[LambdaCallback(on_epoch_end=on_epoch_end), history])
+
+print(history.losses, file=log)
+
+#---------------------------
+
+log = open('dropout2-3.txt', 'w')
+
+
+print('\nPreparing the sentences...')
+max_sentence_len = 30
+with open('trumptweetssentencesformatted.txt') as file_:
+  docs = file_.readlines()
+sentences = [[word for word in doc.lower().split()] for doc in docs]
+print('Num sentences:', len(sentences))
+
+print('\nTraining word2vec...')
+word_model = gensim.models.Word2Vec(sentences, size=300, min_count=1, window=5, iter=100)
+pretrained_weights = word_model.wv.syn0
+vocab_size, emdedding_size = pretrained_weights.shape
+print('Result embedding shape:', pretrained_weights.shape)
+print('Checking similar words:')
+for word in ['model', 'network', 'train', 'learn']:
+  most_similar = ', '.join('%s (%.2f)' % (similar, dist) for similar, dist in word_model.most_similar(word)[:8])
+  print('  %s -> %s' % (word, most_similar))
+
+print('\nPreparing the data for LSTM...')
+train_x = np.zeros([len(sentences), max_sentence_len], dtype=np.int32)
+train_y = np.zeros([len(sentences)], dtype=np.int32)
+for i, sentence in enumerate(sentences):
+  for t, word in enumerate(sentence[:-1]):
+    train_x[i, t] = word2idx(word)
+  train_y[i] = word2idx(sentence[-1])
+print('train_x shape:', train_x.shape)
+print('train_y shape:', train_y.shape)
+
+print('\nTraining LSTM...')
+model = Sequential()
+model.add(Embedding(input_dim=vocab_size, output_dim=emdedding_size, weights=[pretrained_weights]))
+model.add(LSTM(units=emdedding_size))
+model.add(Dense(units=vocab_size))
+model.add(Activation('softmax'))
+model.add(Dropout(.2))
+model.compile(optimizer='adam', loss='sparse_categorical_crossentropy')
+
+history = LossHistory()
+
+model.fit(train_x, train_y,
+          batch_size=512,
           epochs=200,
           callbacks=[LambdaCallback(on_epoch_end=on_epoch_end), history])
 
