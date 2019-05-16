@@ -1,1 +1,1 @@
-# Senior Thesis DRL Chatbot
+# Senior Thesis LSTM Chatbot
