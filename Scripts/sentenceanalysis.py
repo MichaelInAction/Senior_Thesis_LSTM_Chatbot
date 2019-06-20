@@ -1,6 +1,6 @@
 #open the file containing trumps tweet sentences
-trump_tweets_sentences = open('trumptweetssentences.txt', 'r', encoding='latin-1')
-sentences_analysis = open('sentencesanalysis.txt', 'w', encoding='latin-1')
+trump_tweets_sentences = open('../Dataset/trumptweetssentences.txt', 'r', encoding='latin-1')
+sentences_analysis = open('../Dataset/sentencesanalysis.txt', 'w', encoding='latin-1')
 
 num_of_sentences = 0
 word_count = 0
@@ -33,8 +33,5 @@ print('Total number of words: ' + str(word_count))
 print('Total number of words: ' + str(word_count), file=sentences_analysis)
 print('Average sentence length: ' + str(word_count / num_of_sentences))
 print('Average sentence length: ' + str(word_count / num_of_sentences), file=sentences_analysis)
-
-#generate .svg file of a histogram of results
-
 
 trump_tweets_sentences.close()

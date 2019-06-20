@@ -24,12 +24,14 @@ class LossHistory(Callback):
     def on_epoch_end(self, batch, logs={}):
         self.losses.append(logs.get('loss'))
 
-log = open('modelsize300-2.txt', 'w')
+logFile = '../Results/modelsize300-2.txt'
+
+log = open(logFile, 'w')
 
 
 print('\nPreparing the sentences...')
 max_sentence_len = 30
-with open('trumptweetssentencesformatted.txt') as file_:
+with open('../Dataset/trumptweetssentencesformatted.txt') as file_:
   docs = file_.readlines()
 sentences = [[word for word in doc.lower().split()] for doc in docs]
 print('Num sentences:', len(sentences))
@@ -43,6 +45,8 @@ print('Checking similar words:')
 for word in ['model', 'network', 'train', 'learn']:
   most_similar = ', '.join('%s (%.2f)' % (similar, dist) for similar, dist in word_model.most_similar(word)[:8])
   print('  %s -> %s' % (word, most_similar))
+print('Printing encoding for "oil"...')
+print(word_model['oil'])
 
 def word2idx(word):
   return word_model.wv.vocab[word].index
@@ -64,8 +68,8 @@ model = Sequential()
 model.add(Embedding(input_dim=vocab_size, output_dim=emdedding_size, weights=[pretrained_weights]))
 model.add(LSTM(units=emdedding_size))
 model.add(Dense(units=vocab_size))
-model.add(Activation('softmax'))
 model.add(Dropout(0))
+model.add(Activation('softmax'))
 model.compile(optimizer='adam', loss='sparse_categorical_crossentropy')
 
 history = LossHistory()
@@ -92,7 +96,6 @@ def on_epoch_end(epoch, _):
   print('\nGenerating text after epoch: %d' % epoch)
   texts = [
     'crooked',
-    'crooked hillary',
     'america',
     'bad',
     'fake',

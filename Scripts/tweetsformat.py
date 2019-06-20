@@ -4,10 +4,10 @@ import csv
 import re
 
 #open the formatted tweets file to allow us to write to it, using the latin-1 encoding
-trump_tweets_formatted = open('trumptweetsformatted.txt', 'w', encoding='latin-1')
+trump_tweets_formatted = open('../Dataset/trumptweetsformatted.txt', 'w', encoding='latin-1')
 
 #open the input file using the latin-1 encoding
-with open('trumptweets.csv', encoding='latin-1') as csv_file:
+with open('../Dataset/trumptweets.csv', encoding='latin-1') as csv_file:
     csv_reader = csv.reader(csv_file, delimiter='^')
     line_count = 0
 

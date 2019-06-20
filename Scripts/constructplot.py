@@ -1,19 +1,27 @@
+#Construct plot using output files
 
 import os
 import glob
 import numpy as np
 import matplotlib.pyplot as plt
 
+testName = 'batchsize'
+title = 'Batch Loss'
+yLabel = 'Loss'
+xLabel = 'Epoch'
+saveLocation = '../Results/Batch-Loss-Graph.png'
+
 cbs = 0
 bs = ''
 X = []
-cols = {'50':'r',
-        '100': 'b',
-        '300': 'g'}
+cols = {'1024':'r',
+        '512': 'b',
+        '128': 'g',
+        '2': 'c'}
 plt.figure(figsize=(12,6))
 legs = []
-for filename in glob.iglob('modelsize*.txt'):
-  bs = filename.split('-')[0][9:]
+for filename in glob.iglob(testName + '*.txt'):
+  bs = filename.split('-')[0][len(testName):]
   print(bs)
   file = open(filename,'r')
   xl = file.read()[1:-3].split(',')
@@ -31,8 +39,9 @@ for filename in glob.iglob('modelsize*.txt'):
       legs.append(bs+'-'+str(i))
     X = []
 
-plt.title('Model Loss')
-plt.ylabel('Loss')
-plt.xlabel('Epoch')
+plt.title(title)
+plt.ylabel(yLabel)
+plt.xlabel(xLabel)
 plt.legend(legs, loc='upper right')
 plt.show()
+plt.savefig(saveLocation, bbox_inches='tight',dpi=350)

@@ -2,9 +2,9 @@
 import re
 
 #open the formatted tweets file in to break each tweet down into sentences
-trump_tweets_formatted = open('trumptweetsformatted.txt', 'r', encoding='latin-1')
+trump_tweets_formatted = open('../Dataset/trumptweetsformatted.txt', 'r', encoding='latin-1')
 #open the new file to store the sentences
-trump_tweets_sentences = open('trumptweetssentences.txt', 'w', encoding='latin-1')
+trump_tweets_sentences = open('../Dataset/trumptweetssentences.txt', 'w', encoding='latin-1')
 
 #read through each tweet one at a time
 for line in trump_tweets_formatted:
@@ -25,8 +25,8 @@ for line in trump_tweets_formatted:
 trump_tweets_formatted.close()
 trump_tweets_sentences.close()
 
-trump_tweets_sentences_formatted = open('trumptweetssentencesformatted.txt', 'w', encoding='latin-1')
-trump_tweets_sentences = open('trumptweetssentences.txt', 'r', encoding='latin-1')
+trump_tweets_sentences_formatted = open('../Dataset/trumptweetssentencesformatted.txt', 'w', encoding='latin-1')
+trump_tweets_sentences = open('../Dataset/trumptweetssentences.txt', 'r', encoding='latin-1')
 for line in trump_tweets_sentences:
     #get rid of punctuation
     line = line.replace('.', '')
