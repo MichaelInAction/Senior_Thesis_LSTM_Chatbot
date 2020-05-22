@@ -69,6 +69,9 @@ Then, simply run
 python /Scripts/constructplot.py
 ```
 
+## Paper
+[https://csce.ucmss.com/cr/books/2019/LFS/CSREA2019/ICA2677.pdf](https://csce.ucmss.com/cr/books/2019/LFS/CSREA2019/ICA2677.pdf)
+
 ## Authors
 * **Michael Read** - [MichaelInAction](https://github.com/MichaelInAction) -- Main Contributor
 *  **Pablo Rivas** - [pablorp80](https://github.com/pablorp80) -- Project Advisor
